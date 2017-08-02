@@ -26,11 +26,21 @@ namespace WEConsole.Services
         public CloudTable GetTable(string tableName)
         {
             //table name is AzureSubscriptions
+            getquery(tableName);
             CloudTable Table = TableClient.GetTableReference(tableName);
+            if (!Table.Exists())
+                {
+                Console.WriteLine($"Table does not exist. Creating one with name {tableName}");
+                }
             Table.CreateIfNotExistsAsync();
             Console.WriteLine($"Accessed Table: {Table.Name}");
             return Table;
         }
-
+        public void getquery(string tablename)
+            {
+            //comment
+            Console.WriteLine($"Table name was: {tablename}");
+            }
+        
     }
 }
