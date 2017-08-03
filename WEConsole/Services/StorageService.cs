@@ -127,8 +127,14 @@ namespace WEConsole.Services
                 char comma = ',';
                 char colon = ':';
                 string[] messagecomponents = message.Split(comma);
-                string[] humidityparts = messagecomponents[2].Split(colon);
-                double humidity = Convert.ToDouble(humidityparts[1]);
+                string[] humidityparts = messagecomponents[3].Split(colon);
+                var humiditychars = (Convert.ToString(humidityparts[1])).ToCharArray();
+                string humiditystring = "";
+                for (int i = 9; i <humiditychars.Length-2  ; i++)
+                {
+                    humiditystring = humiditystring + humiditychars[(int)i];
+                }
+                double humidity = Convert.ToDouble(humiditystring);
                 Console.WriteLine($"Humidity: {humidity}");
             }
         }
