@@ -35,7 +35,7 @@ namespace WEConsole.Services
                         Console.WriteLine($"Table does not exist. Creating one with name {tableName}");
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Error - {e}");
@@ -45,17 +45,45 @@ namespace WEConsole.Services
                 Console.WriteLine($"Accessed Table: {Table.Name}");
                 return Table;
             }
-        }        
-        public void getquery()
+        }
+        public void gettimestamp(string tablename, string partitionkey, string rowkey)
         {
             try
             {
-                CloudTable table = TableClient.GetTableReference("deviceData");
-                TableOperation retrieveOperation = TableOperation.Retrieve<MessageEntity>("17380", "1501675093450");
+                CloudTable table = TableClient.GetTableReference(tablename);
+                TableOperation retrieveOperation = TableOperation.Retrieve<MessageEntity>(partitionkey, rowkey);
                 TableResult retrievedResult = table.Execute(retrieveOperation);
                 Console.WriteLine(((MessageEntity)retrievedResult.Result).Timestamp);
             }
             catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Error - {e}");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
+        public void getquery(string tablename, string partitionkey)
+        {
+            try
+            {
+                CloudTable table = TableClient.GetTableReference(tablename);
+                TableQuery<MessageEntity> query = new TableQuery<MessageEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionkey));
+                int querycount =0;
+                foreach (MessageEntity entity in table.ExecuteQuery(query))
+                {
+                    querycount = querycount + 1;
+                }
+                Console.WriteLine($"No of items query returned: {querycount}");
+                    foreach (MessageEntity entity in table.ExecuteQuery(query))
+                {
+                    Console.WriteLine("Partition Key: " + entity.PartitionKey + " RowKey: " +entity.RowKey+ " Timestamp: " +entity.Timestamp+ " Message: " +entity.message);
+                    Console.ReadKey();
+                }
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("End of Query");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+            catch(Exception e)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error - {e}");
@@ -68,10 +96,10 @@ namespace WEConsole.Services
         public MessageEntity(string messsage, string timestamp)
         {
             this.RowKey = timestamp;
-            this.PartitionKey= Message;
+            this.PartitionKey= message;
         }
         public MessageEntity() { }
-        public string Message { get; set; }
+        public string message { get; set; }
         public string TimeStamp { get; set; }
         }
     }
