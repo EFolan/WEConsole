@@ -25,22 +25,53 @@ namespace WEConsole.Services
 
         public CloudTable GetTable(string tableName)
         {
-            //table name is AzureSubscriptions
-            getquery(tableName);
-            CloudTable Table = TableClient.GetTableReference(tableName);
-            if (!Table.Exists())
-                {
-                Console.WriteLine($"Table does not exist. Creating one with name {tableName}");
-                }
-            Table.CreateIfNotExistsAsync();
-            Console.WriteLine($"Accessed Table: {Table.Name}");
-            return Table;
-        }
-        public void getquery(string tablename)
             {
-            //comment
-            Console.WriteLine($"Table name was: {tablename}");
+                //table name is AzureSubscriptions         
+                CloudTable Table = TableClient.GetTableReference(tableName);
+                try
+                {
+                    if (!Table.Exists())
+                    {
+                        Console.WriteLine($"Table does not exist. Creating one with name {tableName}");
+                    }
+                }
+                catch(Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"Error - {e}");
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                }
+                Table.CreateIfNotExistsAsync();
+                Console.WriteLine($"Accessed Table: {Table.Name}");
+                return Table;
             }
-        
+        }        
+        public void getquery()
+        {
+            try
+            {
+                CloudTable table = TableClient.GetTableReference("deviceData");
+                TableOperation retrieveOperation = TableOperation.Retrieve<MessageEntity>("17380", "1501675093450");
+                TableResult retrievedResult = table.Execute(retrieveOperation);
+                Console.WriteLine(((MessageEntity)retrievedResult.Result).Timestamp);
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"Error - {e}");
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
     }
-}
+    public class MessageEntity : TableEntity
+    {
+        public MessageEntity(string messsage, string timestamp)
+        {
+            this.RowKey = timestamp;
+            this.PartitionKey= Message;
+        }
+        public MessageEntity() { }
+        public string Message { get; set; }
+        public string TimeStamp { get; set; }
+        }
+    }

@@ -15,7 +15,7 @@ namespace WEConsole
             Console.WriteLine("Enter a Table name");
             string TableName = Console.ReadLine();
             Storage.GetTable(TableName);
-            Storage.getquery("test");
+            Storage.getquery();
             Console.WriteLine("Press any key to exit");
             Console.ReadKey();
         }
