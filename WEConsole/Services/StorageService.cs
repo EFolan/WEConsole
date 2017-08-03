@@ -111,6 +111,27 @@ namespace WEConsole.Services
                 Console.WriteLine($"Temperature: {temperature}");
             }
         }
+        public void humidity(string tablename, string partitionkey)
+        {
+            CloudTable table = TableClient.GetTableReference(tablename);
+            TableQuery<MessageEntity> query = new TableQuery<MessageEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionkey));
+            int querycount = 0;
+            foreach (MessageEntity entity in table.ExecuteQuery(query))
+            {
+                querycount = querycount + 1;
+            }
+            Console.WriteLine($"No of items query returned: {querycount}");
+            foreach (MessageEntity entity in table.ExecuteQuery(query))
+            {
+                string message = Convert.ToString(entity.message);
+                char comma = ',';
+                char colon = ':';
+                string[] messagecomponents = message.Split(comma);
+                string[] humidityparts = messagecomponents[2].Split(colon);
+                double humidity = Convert.ToDouble(humidityparts[1]);
+                Console.WriteLine($"Humidity: {humidity}");
+            }
+        }
     }
     public class MessageEntity : TableEntity
     {
