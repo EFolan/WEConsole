@@ -46,12 +46,12 @@ namespace WEConsole.Services
                 return Table;
             }
         }
-        public void gettimestamp()
+        public void gettimestamp(string tablename, string partitionkey, string rowkey)
         {
             try
             {
-                CloudTable table = TableClient.GetTableReference("deviceData");
-                TableOperation retrieveOperation = TableOperation.Retrieve<MessageEntity>("17380", "1501675093450");
+                CloudTable table = TableClient.GetTableReference(tablename);
+                TableOperation retrieveOperation = TableOperation.Retrieve<MessageEntity>(partitionkey, rowkey);
                 TableResult retrievedResult = table.Execute(retrieveOperation);
                 Console.WriteLine(((MessageEntity)retrievedResult.Result).Timestamp);
             }
@@ -62,13 +62,19 @@ namespace WEConsole.Services
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
         }
-        public void getquery()
+        public void getquery(string tablename, string partitionkey)
         {
             try
             {
-                CloudTable table = TableClient.GetTableReference("deviceData");
-                TableQuery<MessageEntity> query = new TableQuery<MessageEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, "17380"));
+                CloudTable table = TableClient.GetTableReference(tablename);
+                TableQuery<MessageEntity> query = new TableQuery<MessageEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionkey));
+                int querycount =0;
                 foreach (MessageEntity entity in table.ExecuteQuery(query))
+                {
+                    querycount = querycount + 1;
+                }
+                Console.WriteLine($"No of items query returned: {querycount}");
+                    foreach (MessageEntity entity in table.ExecuteQuery(query))
                 {
                     Console.WriteLine("Partition Key: " + entity.PartitionKey + " RowKey: " +entity.RowKey+ " Timestamp: " +entity.Timestamp+ " Message: " +entity.message);
                     Console.ReadKey();
