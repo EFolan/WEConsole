@@ -5,6 +5,9 @@ IoT hub on Azure, to the storage. The program then reads and parses the storage.
 else)
 
 Notes:
-Azure account is free, so will run out soon rendering project useless
+
+Azure account is free, so will run out soon rendering project useless.
+
 App.config requires the connection key to the storage.
-RasbPi sim (https://azure-samples.github.io/raspberry-pi-web-simulator/#GetStarted) needs the IoT hub connection string
+
+RasbPi sim (https://azure-samples.github.io/raspberry-pi-web-simulator/#GetStarted) needs the IoT hub connection string.
