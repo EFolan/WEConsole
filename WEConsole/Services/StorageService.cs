@@ -76,7 +76,7 @@ namespace WEConsole.Services
                 Console.WriteLine($"No of items query returned: {querycount}");
                     foreach (MessageEntity entity in table.ExecuteQuery(query))
                 {
-                    Console.WriteLine("Partition Key: " + entity.PartitionKey + " RowKey: " +entity.RowKey+ " Timestamp: " +entity.Timestamp+ " Message: " +entity.message);
+                    Console.WriteLine("\n Partition Key: " + entity.PartitionKey + "\n RowKey: " +entity.RowKey+ "\n Timestamp (GMT): " +entity.Timestamp+ "\n Message: " +entity.message);
                     Console.ReadKey();
                 }
                 Console.ForegroundColor = ConsoleColor.Green;
@@ -88,6 +88,27 @@ namespace WEConsole.Services
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Error - {e}");
                 Console.ForegroundColor = ConsoleColor.Gray;
+            }
+        }
+        public void temperature(string tablename, string partitionkey)
+        {
+            CloudTable table = TableClient.GetTableReference(tablename);
+            TableQuery<MessageEntity> query = new TableQuery<MessageEntity>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionkey));
+            int querycount = 0;
+            foreach (MessageEntity entity in table.ExecuteQuery(query))
+            {
+                querycount = querycount + 1;
+            }
+            Console.WriteLine($"No of items query returned: {querycount}");
+            foreach(MessageEntity entity in table.ExecuteQuery(query))
+            {                
+                string message = Convert.ToString(entity.message);
+                char comma = ',';
+                char colon = ':';
+                string[] messagecomponents = message.Split(comma);                
+                string[] temperatureparts = messagecomponents[2].Split(colon);
+                double temperature = Convert.ToDouble(temperatureparts[1]);
+                Console.WriteLine($"Temperature: {temperature}");
             }
         }
     }
