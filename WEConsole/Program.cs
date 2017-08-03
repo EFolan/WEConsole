@@ -17,7 +17,7 @@ namespace WEConsole
             string TableName = "UNASSIGNED";
             do
             {
-                Console.WriteLine("Enter 1 to open table, 2 to get the timestamp, 3 to use a query, 4 to show temperatures and q to quit.");
+                Console.WriteLine("Enter 1 to open table, 2 to get the timestamp, 3 to use a query, 4 to show temperatures, 5 to show humidities and q to quit.");
                 string resp = Console.ReadLine();
                 try
                 {
@@ -41,7 +41,14 @@ namespace WEConsole
                             Storage.getquery(TableName,pkeyqueryinput );
                             break;
                         case "4":
-                            Storage.temperature(TableName,"17381");
+                            Console.WriteLine("Enter the Partition key");
+                            string temperaturepkey = Console.ReadLine();
+                            Storage.temperature(TableName,temperaturepkey );
+                            break;
+                        case "5":
+                            Console.WriteLine("Enter the Partition key");
+                            string humiditypkey = Console.ReadLine();
+                            Storage.humidity(TableName, humiditypkey);
                             break;
                         case "q":
                             programend = true;
