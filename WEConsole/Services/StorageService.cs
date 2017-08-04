@@ -132,7 +132,7 @@ namespace WEConsole.Services
                 string humiditystring = "";
                 for (int i = 9; i <humiditychars.Length-2  ; i++)
                 {
-                    humiditystring = humiditystring + humiditychars[(int)i];
+                    humiditystring = humiditystring + Convert.ToInt64(humiditychars[i]);
                 }
                 double humidity = Convert.ToDouble(humiditystring);
                 Console.WriteLine($"Humidity: {humidity}");
